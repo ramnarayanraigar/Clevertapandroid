@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Clevertapandroid</string>
     <string name="clevertap_account_id">TEST–6Z8-4ZZ-6R6Z</string>
-    <string name="clevertap_account_token">TEST-114-B16</string>
-    <string name="product_viewed">Product Viewed</string>
+    <string name="clevertap_account_token">TEST-114-b16</string>
+    <string name="view_product">View Product</string>
     <string name="send_name_email">Send</string>
     <string name="name">Name</string>
     <string name="email">Email</string>

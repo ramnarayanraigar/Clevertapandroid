@@ -21,27 +21,19 @@ public class MainActivity extends AppCompatActivity {
     private Button btnProductViewed, btnSend;
     private EditText editName, editEmail;
 
+    CleverTapAPI clevertap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initViews();
-
-
-        // For question 1 A
-        CleverTapAPI.getDefaultInstance(context);
-        CleverTapAPI clevertap = CleverTapAPI.getDefaultInstance(getApplicationContext());
-
-
-        CleverTapInstanceConfig clevertapAdditionalInstanceConfig = CleverTapInstanceConfig.createInstance(context, context.getString(R.string.clevertap_account_id), context.getString(R.string.clevertap_account_token));
-        clevertapAdditionalInstanceConfig.setDebugLevel(CleverTapAPI.LogLevel.DEBUG); // default is CleverTapAPI.LogLevel.INFO
-        clevertapAdditionalInstanceConfig.setAnalyticsOnly(true); // disables the user engagement features of the instance, default is false
+        cleverTapInitialization(); // For question 1 A, added clevertap sdk
 
         // for question 1 B
         btnProductViewed.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ProductViewedActivity.class);
-            startActivity(intent);
+            productViewed();
         });
 
         // for question 1 C
@@ -52,12 +44,35 @@ public class MainActivity extends AppCompatActivity {
         // for question 1 D i have implemented push notification
     }
 
+
+    private void productViewed() {
+        HashMap<String, Object> prodViewedAction = new HashMap<>();
+        prodViewedAction.put("Product Name", "CleverTap");
+        prodViewedAction.put("Product ID", "1");
+        prodViewedAction.put("Product Image", "https://d35fo82fjcw0y8.cloudfront.net/2018/07/26020307/customer-success-clevertap.jpg");
+        clevertap.pushEvent("Product Viewed", prodViewedAction);
+
+        Toast.makeText(context, "Product Viewed called", Toast.LENGTH_SHORT).show();
+    }
+
     private void initViews() {
         context = this;
         btnProductViewed = findViewById(R.id.btn_product_viewed);
         btnSend = findViewById(R.id.btn_send);
         editName = findViewById(R.id.edit_name);
         editEmail = findViewById(R.id.edit_email);
+    }
+
+    private void cleverTapInitialization() {
+        CleverTapAPI.getDefaultInstance(context);
+        clevertap = CleverTapAPI.getDefaultInstance(getApplicationContext());
+
+        CleverTapInstanceConfig clevertapAdditionalInstanceConfig = CleverTapInstanceConfig.createInstance(context, context.getString(R.string.clevertap_account_id), context.getString(R.string.clevertap_account_token));
+        clevertapAdditionalInstanceConfig.setDebugLevel(CleverTapAPI.LogLevel.DEBUG); // default is CleverTapAPI.LogLevel.INFO
+        clevertapAdditionalInstanceConfig.setAnalyticsOnly(true); // disables the user engagement features of the instance, default is false
+
+        CleverTapAPI clevertapAdditionalInstance = CleverTapAPI.instanceWithConfig(context,clevertapAdditionalInstanceConfig);
+
     }
 
     // email and name validation check
@@ -72,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             profileUpdate.put("Email", editEmail.getText().toString()); // Email address of the user
 
             clevertap.pushProfile(profileUpdate);
+            Toast.makeText(context, "Email and name sent.", Toast.LENGTH_SHORT).show();
         }
     }
 
